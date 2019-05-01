@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NewAlarmActivity"
+    android:padding="@dimen/default_padding"
+    android:paddingTop="16dp"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/newAlarmNameTextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="25"
+                    android:maxLines="1"
+                    android:hint="Description" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <TimePicker
+                android:id="@+id/newAlarmDateTimePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding"
+                />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding">
+
+                <TextView
+                    android:id="@+id/newAlarmRingtoneDescriptionTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="Ringtone"
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/alarmFormDescription_textSize"
+                    android:layout_marginStart="@dimen/default_padding"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/newAlarmRingtoneNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginHorizontal="@dimen/default_padding"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/colorDark"
+                    android:textSize="@dimen/alarmFormDescription_textSize"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/newAlarmPickRingtoneButton"
+                    app:layout_constraintStart_toEndOf="@id/newAlarmRingtoneDescriptionTextView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/newAlarmPickRingtoneButton"
+                    style="@style/SuccessButtonStyle"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:padding="0dp"
+                    android:text="..."
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="Is Active"
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/alarmFormDescription_textSize"
+                    android:layout_marginStart="@dimen/default_padding"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Switch
+                    android:id="@+id/newAlarmOnOffSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="33dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:checked="false"
+                    android:padding="@dimen/default_padding"
+                    android:scaleX="1.2"
+                    android:scaleY="1.2"
+                    android:textOff="OFF"
+                    android:textOn="ON"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/newAlarmAddNewConstraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/newAlarmSaveButton"
+                    style="@style/PrimaryButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:text="Save"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/newAlarmUpdateConstraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_padding"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/newAlarmUpdateButton"
+                    style="@style/WarningButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:layout_marginStart="@dimen/default_padding"
+                    android:text="Update"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <Button
+                    android:id="@+id/newAlarmDeleteButton"
+                    style="@style/DangerButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/default_padding"
+                    android:text="Delete"
+                    app:layout_constraintEnd_toStartOf="@+id/newAlarmUpdateButton" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

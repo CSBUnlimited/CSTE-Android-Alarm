@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:rowCount="1"
+    android:columnCount="8"
+    android:padding="@dimen/default_padding"
+    android:id="@+id/oneAlarmLayout">
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:layout_columnSpan="3"
+        android:layout_columnWeight="3"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/oneAlarmTimeTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/default_padding"
+            android:text="--:--"
+            android:textAlignment="textStart"
+            android:textSize="@dimen/alarmListTime_textSize"
+            />
+
+        <TextView
+            android:id="@+id/oneAlarmNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/default_padding"
+            android:text="..."
+            android:textAlignment="textStart"
+            android:textSize="@dimen/alarmListName_textSize"
+            />
+
+    </LinearLayout>
+
+
+    <Switch
+        android:id="@+id/oneAlarmOnOffSwitch"
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_column="3"
+        android:layout_columnWeight="1"
+        android:layout_margin="@dimen/default_padding"
+        android:layout_marginEnd="8dp"
+        android:checked="false"
+        android:padding="@dimen/default_padding"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:layout_gravity="center"/>
+
+    <!--<ImageButton-->
+        <!--android:id="@+id/oneAlarmDeleteButton"-->
+        <!--android:layout_width="30dp"-->
+        <!--android:layout_height="30dp"-->
+        <!--android:background="@color/whiteBackground"-->
+        <!--android:contentDescription="Delete"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--android:src="@drawable/delete_icon" />-->
+
+</GridLayout>
