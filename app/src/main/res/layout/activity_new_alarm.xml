@@ -124,8 +124,7 @@
                 android:id="@+id/newAlarmAddNewConstraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_padding"
-                android:visibility="visible">
+                android:layout_marginTop="@dimen/default_padding">
 
                 <Button
                     android:id="@+id/newAlarmSaveButton"
@@ -142,8 +141,7 @@
                 android:id="@+id/newAlarmUpdateConstraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_padding"
-                android:visibility="visible">
+                android:layout_marginTop="@dimen/default_padding">
 
                 <Button
                     android:id="@+id/newAlarmUpdateButton"

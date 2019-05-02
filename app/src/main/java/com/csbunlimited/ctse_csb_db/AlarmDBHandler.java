@@ -57,20 +57,39 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
     }
 
     // Alarms Table
+    public int getNextAlarmId() {
+        int nextId = 0;
+        String tableName;
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor =db.query("sqlite_sequence", new String[]{ "name", "seq" }, null, null, null, null, null, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                tableName = cursor.getString(0);
+
+                if (tableName.equals(TABLE_ALARMS)) {
+                    nextId = Integer.parseInt(cursor.getString(1));
+                    break;
+                }
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        db.close();
+
+        return ++nextId;
+    }
 
     // Get all alarms
     public List<Alarm> getAllAlarms() {
         List<Alarm> alarms = new ArrayList<Alarm>();
-
-        String query = "SELECT " + TABLE_ALARMS_COLUMN_ID + ", " +
-                TABLE_ALARMS_COLUMN_NAME + ", " +
-                TABLE_ALARMS_COLUMN_ISACTIVE + ", " +
-                TABLE_ALARMS_COLUMN_DATE + ", " +
-                TABLE_ALARMS_COLUMN_RINGTONEURI + " " +
-                "FROM " + TABLE_ALARMS;
         SQLiteDatabase db = getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.query(TABLE_ALARMS,
+                new String[]{ TABLE_ALARMS_COLUMN_ID, TABLE_ALARMS_COLUMN_NAME, TABLE_ALARMS_COLUMN_ISACTIVE, TABLE_ALARMS_COLUMN_DATE, TABLE_ALARMS_COLUMN_RINGTONEURI },
+                null, null, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -80,10 +99,12 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
                 alarm.setName(cursor.getString(1));
                 alarm.setIsActive(Integer.parseInt(cursor.getString(2)) == 1);
                 alarm.setDate(new Date(Long.parseLong(cursor.getString(3))));
-                alarm.setRingtoneUri(Uri.parse(cursor.getString(4)));
+                alarm.setRingtoneUri(cursor.getString(4) == "" ? (Uri) null : Uri.parse(cursor.getString(4)));
 
                 alarms.add(alarm);
             } while (cursor.moveToNext());
+
+            cursor.close();
         }
 
         db.close();
@@ -103,14 +124,17 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
 
         if (cursor != null && cursor.moveToFirst()) {
             alarm = new Alarm();
+
             alarm.setId(Integer.parseInt(cursor.getString(0)));
             alarm.setName(cursor.getString(1));
             alarm.setIsActive(Integer.parseInt(cursor.getString(2)) == 1);
             alarm.setDate(new Date(Long.parseLong(cursor.getString(3))));
-            alarm.setRingtoneUri(Uri.parse(cursor.getString(4)));
-        }
-        db.close();
+            alarm.setRingtoneUri(cursor.getString(4) == "" ? (Uri) null : Uri.parse(cursor.getString(4)));
 
+            cursor.close();
+        }
+
+        db.close();
         return alarm;
     }
 
