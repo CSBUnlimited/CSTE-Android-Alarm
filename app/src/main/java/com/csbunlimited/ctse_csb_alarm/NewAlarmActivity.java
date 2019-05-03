@@ -1,6 +1,8 @@
 package com.csbunlimited.ctse_csb_alarm;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -22,10 +24,14 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import android.content.Context;
+
 import com.csbunlimited.ctse_csb_alarm_consts.AppKey;
 import com.csbunlimited.ctse_csb_alarm_models.Alarm;
+import com.csbunlimited.ctse_csb_alarm_services.AlarmBroadcastReceiver;
 import com.csbunlimited.ctse_csb_db.AlarmDBHandler;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -98,7 +104,6 @@ public class NewAlarmActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 _alarm.setIsActive(isChecked);
-                setAlarmTime();
             }
         });
 
@@ -106,16 +111,9 @@ public class NewAlarmActivity extends AppCompatActivity {
         _newAlarmDateTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                Date today = new Date();
                 Date alarmDate = _alarm.getDate();
-
                 alarmDate.setHours(hourOfDay);
                 alarmDate.setMinutes(minute);
-
-                if (today.getTime() >= alarmDate.getTime()) {
-                    alarmDate.setTime(alarmDate.getTime() + TimeUnit.DAYS.toMillis(1));
-                }
-
                 _alarm.setDate(alarmDate);
             }
         });
@@ -192,6 +190,7 @@ public class NewAlarmActivity extends AppCompatActivity {
     }
 
     private void addOrUpdateAlarm() {
+        // Getting data and validations
         String name = _alarm.getName();
         String ringtone = (_alarm.getRingtoneUri() == null ? "" : _alarm.getRingtoneUri().toString()).trim();
 
@@ -205,21 +204,65 @@ public class NewAlarmActivity extends AppCompatActivity {
             return;
         }
 
-        if (_alarm.getId() > 0) {
-            _alarmDBHandler.updateAlarm(_alarm);
+        // Correcting date issues
+        Date today = new Date();
+
+        Date alarmDate = _alarm.getDate();
+        alarmDate.setSeconds(0);
+        alarmDate.setTime(alarmDate.getTime() - alarmDate.getTime() % 1000);
+
+        long oneDayInMilis = TimeUnit.DAYS.toMillis(1);
+
+        if (today.getTime() >= alarmDate.getTime()) {
+            alarmDate.setTime(alarmDate.getTime() + oneDayInMilis);
         }
-        else {
-            _alarmDBHandler.addAlarm(_alarm);
+        else if (alarmDate.getTime() - today.getTime() > oneDayInMilis) {
+            alarmDate.setTime(alarmDate.getTime() - oneDayInMilis);
         }
 
-        finishActivity(ACTIVITY_RESULT_STATUS_CODE);
+        // Inserting data to DB
+        if (_alarm.getId() > 0) {
+            boolean isSuccess = _alarmDBHandler.updateAlarm(_alarm);
+
+            if (!isSuccess) {
+                Toast.makeText(NewAlarmActivity.this, "Alarm updating failed. Please try again.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Toast.makeText(NewAlarmActivity.this, "Alarm updated.", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            int newAlarmId = _alarmDBHandler.addAlarm(_alarm);
+
+            if (newAlarmId < 0) {
+                Toast.makeText(NewAlarmActivity.this, "Alarm adding failed. Please try again.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            _alarm.setId(newAlarmId);
+            Toast.makeText(NewAlarmActivity.this, "Alarm added.", Toast.LENGTH_SHORT).show();
+        }
+
+        if (_alarm.getIsActive()) {
+            Intent alarmIntent = new Intent(NewAlarmActivity.this, AlarmBroadcastReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(NewAlarmActivity.this, _alarm.getId(), alarmIntent, 0);
+
+            AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(_alarm.getDate().getTime());
+
+            // Repeating on every day
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), oneDayInMilis, pendingIntent);
+        }
+
+        finish();
     }
 
     private void deleteAlarm() {
         _alarmDBHandler.deleteAlarmById(_alarm.getId());
+        finish();
         Toast.makeText(NewAlarmActivity.this, "Alarm deleted.", Toast.LENGTH_SHORT).show();
-
-        finishActivity(ACTIVITY_RESULT_STATUS_CODE);
     }
 
     private void setAlarmName() {
