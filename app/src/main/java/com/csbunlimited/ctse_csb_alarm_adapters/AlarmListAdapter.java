@@ -9,11 +9,10 @@ import android.widget.BaseAdapter;
 import android.widget.GridLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.csbunlimited.ctse_csb_alarm.NewAlarmActivity;
 import com.csbunlimited.ctse_csb_alarm.R;
-import com.csbunlimited.ctse_csb_alarm_consts.AppKey;
+import com.csbunlimited.ctse_csb_alarm_consts.AlarmApplication;
 import com.csbunlimited.ctse_csb_alarm_models.Alarm;
 
 import java.util.List;
@@ -68,7 +67,7 @@ public class AlarmListAdapter extends BaseAdapter {
 //                Toast.makeText(clickedView.getContext(), "test " + alarm.getId(), Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(_activityContext, NewAlarmActivity.class);
-                intent.putExtra(AppKey.ALARM_ID, alarm.getId());
+                intent.putExtra(AlarmApplication.ALARM_ID, alarm.getId());
                 _activityContext.startActivity(intent);
             }
         });

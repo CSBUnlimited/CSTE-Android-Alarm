@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.csbunlimited.ctse_csb_alarm_adapters.AlarmListAdapter;
 import com.csbunlimited.ctse_csb_alarm_models.Alarm;
+import com.csbunlimited.ctse_csb_alarm_services.ManageAlarmService;
 import com.csbunlimited.ctse_csb_db.AlarmDBHandler;
 
 import java.util.List;
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ManageAlarmService.initializeManageAlarmServiceInstance(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         _contentMainAlarmStatusTextView.setVisibility(View.VISIBLE);
 
         _alarmList = _alarmDBHandler.getAllAlarms();
-        AlarmListAdapter alarmListAdapter = new AlarmListAdapter(MainActivity.this, _alarmList);
+        AlarmListAdapter alarmListAdapter = new AlarmListAdapter(this, _alarmList);
         _contentMainAlarmListView.setAdapter(alarmListAdapter);
 
         if (_alarmList.isEmpty()) {
