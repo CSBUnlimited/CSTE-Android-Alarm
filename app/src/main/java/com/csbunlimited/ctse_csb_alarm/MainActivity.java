@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.csbunlimited.ctse_csb_alarm_adapters.AlarmListAdapter;
+import com.csbunlimited.ctse_csb_alarm_consts.AlarmApplication;
 import com.csbunlimited.ctse_csb_alarm_models.Alarm;
 import com.csbunlimited.ctse_csb_alarm_services.ManageAlarmService;
 import com.csbunlimited.ctse_csb_db.AlarmDBHandler;
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        AlarmApplication.setMainActivity(this);
+
         ManageAlarmService.initializeManageAlarmServiceInstance(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -48,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
 
-                Intent myIntent = new Intent(MainActivity.this, NewAlarmActivity.class);
-                startActivity(myIntent);
+                Intent intent = new Intent(MainActivity.this, NewAlarmActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -73,6 +76,17 @@ public class MainActivity extends AppCompatActivity {
         else {
             _contentMainAlarmStatusTextView.setVisibility(View.GONE);
             _contentMainAlarmListView.setVisibility(View.VISIBLE);
+
+            for (int index = 0, size = _alarmList.size(); index < size; index++) {
+                Alarm alarm = _alarmList.get(index);
+
+//                if (alarm.getAudioSessionId() > 0) {
+//                    Intent intent = new Intent(MainActivity.this, StopAlarmActivity.class);
+//                    intent.putExtra(AlarmApplication.ALARM_ID, alarm.getId());
+//                    startActivity(intent);
+//                    break;
+//                }
+            }
         }
     }
 

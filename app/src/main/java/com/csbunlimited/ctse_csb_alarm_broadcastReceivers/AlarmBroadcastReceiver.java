@@ -6,6 +6,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.widget.Toast;
 
 import com.csbunlimited.ctse_csb_alarm.NewAlarmActivity;
@@ -33,8 +35,36 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
             if (alarm != null) {
                 NotificationManagerService notificationManagerService = new NotificationManagerService(context);
-                notificationManagerService.sendRingAlarmNofication(((alarm.getDate().getHours() < 10) ? "0" : "") + alarm.getDate().getHours()
-                        + " : " + ((alarm.getDate().getMinutes() < 10) ? "0" : "") + alarm.getDate().getMinutes(), alarm.getName());
+                notificationManagerService.sendRingAlarmNofication(alarm);
+
+                try {
+                    MediaPlayer mediaPlayer = new MediaPlayer();
+                    mediaPlayer.setDataSource(context, alarm.getRingtoneUri());
+
+                    final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                    if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+                        mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+
+                        int loopCount = 0, maxLoopCount = 5;
+                        do {
+                            int audioSessionId = audioManager.generateAudioSessionId();
+                            mediaPlayer.setAudioSessionId(audioSessionId);
+                            loopCount++;
+                        } while (mediaPlayer.getAudioSessionId() == AudioManager.ERROR && loopCount <= maxLoopCount);
+
+                        if (mediaPlayer.getAudioSessionId() != AudioManager.ERROR) {
+                            mediaPlayer.setLooping(true);
+//                            mediaPlayer.prepare();
+                            mediaPlayer.start();
+                        }
+                    }
+
+                    alarm.setAudioSessionId(mediaPlayer.getAudioSessionId());
+                    alarmDBHandler.updateAlarm(alarm);
+                }
+                catch (Exception ex) {
+                    System.out.print(ex.toString());
+                }
             }
 
         }

@@ -7,11 +7,14 @@ import java.util.Date;
 
 public class Alarm {
 
+    public static final int NONE_AUDIO_SESSION_ID = -500;
+
     private int id;
     private String name;
     private boolean isActive;
     private Date date;
     private Uri ringtoneUri;
+    private int audioSessionId;
 
     public Date getDate() { return date; }
 
@@ -51,12 +54,17 @@ public class Alarm {
         this.ringtoneUri = ringtoneUri;
     }
 
+    public int getAudioSessionId() { return audioSessionId; }
+
+    public void setAudioSessionId(int audioSessionId) { this.audioSessionId = audioSessionId; }
+
     public Alarm() {
         this.id = 0;
         this.name = "";
         this.isActive = true;
         this.date = new Date();
         this.ringtoneUri = null;
+        this.audioSessionId = NONE_AUDIO_SESSION_ID;
     }
 
     public Alarm(int id, String name, boolean isActive, Date date, Uri ringtoneUri) {
@@ -65,5 +73,6 @@ public class Alarm {
         this.isActive = isActive;
         this.date = date;
         this.ringtoneUri = ringtoneUri;
+        this.audioSessionId = NONE_AUDIO_SESSION_ID;
     }
 }

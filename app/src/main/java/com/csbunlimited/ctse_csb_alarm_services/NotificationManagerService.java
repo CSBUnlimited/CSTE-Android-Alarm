@@ -1,12 +1,14 @@
 package com.csbunlimited.ctse_csb_alarm_services;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.Toast;
 import com.csbunlimited.ctse_csb_alarm.R;
 import com.csbunlimited.ctse_csb_alarm_consts.AlarmApplication;
+import com.csbunlimited.ctse_csb_alarm_models.Alarm;
 
 public class NotificationManagerService {
 
@@ -18,16 +20,21 @@ public class NotificationManagerService {
         _notificationManagerCompat = NotificationManagerCompat.from(_context);
     }
 
-    public void sendRingAlarmNofication(String alarmTimeInString, String alarmName) {
+    public void sendRingAlarmNofication(Alarm alarm) {
+        String alarmTimeInString = ((alarm.getDate().getHours() < 10) ? "0" : "") + alarm.getDate().getHours()
+                + " : " + ((alarm.getDate().getMinutes() < 10) ? "0" : "") + alarm.getDate().getMinutes();
+
         Notification notification = new NotificationCompat.Builder(_context, AlarmApplication.CHANNEL_1_RING_ALARM)
                 .setSmallIcon(R.drawable.ic_ring_alarm)
                 .setContentTitle(alarmTimeInString)
-                .setContentText(alarmName)
+                .setContentText(alarm.getName())
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setSound(alarm.getRingtoneUri())
+                .setOngoing(true)
                 .build();
 
-        _notificationManagerCompat.notify(1, notification);
+        _notificationManagerCompat.notify(alarm.getId(), notification);
     }
 
     public void sendOtherNofication(String title, String message) {
@@ -47,5 +54,10 @@ public class NotificationManagerService {
 
     public void sendLongLengthToastMessage(String message) {
         Toast.makeText(_context, message, Toast.LENGTH_LONG).show();
+    }
+
+    public void removeNotification(int alarmId) {
+        NotificationManager notificationManager = (NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(alarmId);
     }
 }

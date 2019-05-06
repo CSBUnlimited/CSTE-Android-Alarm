@@ -4,14 +4,14 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 
 import com.csbunlimited.ctse_csb_alarm.MainActivity;
 import com.csbunlimited.ctse_csb_alarm_broadcastReceivers.AlarmBroadcastReceiver;
 import com.csbunlimited.ctse_csb_alarm_consts.AlarmApplication;
 
 import java.util.Date;
-
-import static android.support.v4.content.ContextCompat.getSystemService;
 
 public class ManageAlarmService {
 
@@ -60,5 +60,23 @@ public class ManageAlarmService {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(_mainActivityContext, alarmId, intent, 0);
 
         alarmManager.cancel(pendingIntent);
+    }
+
+    public void stopAlarm(int alarmId, int audioSessionId) {
+        cancelAlarm(alarmId);
+
+        try {
+            AudioManager audioManager = (AudioManager) _mainActivityContext.getSystemService(Context.AUDIO_SERVICE);
+
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioSessionId(audioSessionId);
+
+            if (mediaPlayer.getAudioSessionId() == AudioManager.ERROR || mediaPlayer.getAudioSessionId() <= 0) {
+                return;
+            }
+
+            mediaPlayer.release();
+        }
+        catch (Exception ex) { }
     }
 }

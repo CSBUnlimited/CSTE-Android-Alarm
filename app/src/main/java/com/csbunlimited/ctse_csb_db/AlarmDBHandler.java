@@ -17,7 +17,7 @@ import java.util.List;
 public class AlarmDBHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 6;
     // Database Name
     private static final String DATABASE_NAME = "CSB_ALARM";
 
@@ -30,6 +30,7 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
     private static final String TABLE_ALARMS_COLUMN_ISACTIVE = "IsActive";
     private static final String TABLE_ALARMS_COLUMN_DATE = "Date";
     private static final String TABLE_ALARMS_COLUMN_RINGTONEURI = "RingtoneUri";
+    private static final String TABLE_ALARMS_COLUMN_AUDIOSESSIONID = "AudioSessionId";
 
     public AlarmDBHandler(Context applicationContext) {
         super(applicationContext, DATABASE_NAME, null, DATABASE_VERSION);
@@ -42,7 +43,8 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
                 "`" + TABLE_ALARMS_COLUMN_NAME + "` TEXT, " +
                 "`" + TABLE_ALARMS_COLUMN_ISACTIVE + "` INTEGER, " +
                 "`" + TABLE_ALARMS_COLUMN_DATE + "` NUMERIC, " +
-                "`" + TABLE_ALARMS_COLUMN_RINGTONEURI + "` TEXT " +
+                "`" + TABLE_ALARMS_COLUMN_RINGTONEURI + "` TEXT, " +
+                "`" + TABLE_ALARMS_COLUMN_AUDIOSESSIONID + "` INTEGER " +
                 ");";
 
         db.execSQL(createAlarmsTable);
@@ -50,9 +52,13 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String query ="INSERT INTO `Alarms`(`Name`,`IsActive`,`Date`,`RingtoneUri`) " +
-                "VALUES ('Test','1','1556714707000 ','');";
+        String query = "DROP TABLE `" + TABLE_ALARMS + "`";
+        db.execSQL(query);
 
+        onCreate(db);
+
+        query ="INSERT INTO `Alarms`(`Name`,`IsActive`,`Date`,`RingtoneUri`,`AudioSessionId`) " +
+                "VALUES ('Test','1','1556714707000 ','', -500);";
         db.execSQL(query);
     }
 
@@ -62,7 +68,7 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
         String tableName;
 
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor =db.query("sqlite_sequence", new String[]{ "name", "seq" }, null, null, null, null, null, null);
+        Cursor cursor = db.query("sqlite_sequence", new String[]{ "name", "seq" }, null, null, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -88,7 +94,7 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_ALARMS,
-                new String[]{ TABLE_ALARMS_COLUMN_ID, TABLE_ALARMS_COLUMN_NAME, TABLE_ALARMS_COLUMN_ISACTIVE, TABLE_ALARMS_COLUMN_DATE, TABLE_ALARMS_COLUMN_RINGTONEURI },
+                new String[]{ TABLE_ALARMS_COLUMN_ID, TABLE_ALARMS_COLUMN_NAME, TABLE_ALARMS_COLUMN_ISACTIVE, TABLE_ALARMS_COLUMN_DATE, TABLE_ALARMS_COLUMN_RINGTONEURI, TABLE_ALARMS_COLUMN_AUDIOSESSIONID },
                 null, null, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -100,6 +106,7 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
                 alarm.setIsActive(Integer.parseInt(cursor.getString(2)) == 1);
                 alarm.setDate(new Date(Long.parseLong(cursor.getString(3))));
                 alarm.setRingtoneUri(cursor.getString(4) == "" ? (Uri) null : Uri.parse(cursor.getString(4)));
+                alarm.setAudioSessionId(Integer.parseInt(cursor.getString(5)));
 
                 alarms.add(alarm);
             } while (cursor.moveToNext());
@@ -118,7 +125,7 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_ALARMS,
-                new String[]{TABLE_ALARMS_COLUMN_ID, TABLE_ALARMS_COLUMN_NAME, TABLE_ALARMS_COLUMN_ISACTIVE, TABLE_ALARMS_COLUMN_DATE, TABLE_ALARMS_COLUMN_RINGTONEURI},
+                new String[]{ TABLE_ALARMS_COLUMN_ID, TABLE_ALARMS_COLUMN_NAME, TABLE_ALARMS_COLUMN_ISACTIVE, TABLE_ALARMS_COLUMN_DATE, TABLE_ALARMS_COLUMN_RINGTONEURI, TABLE_ALARMS_COLUMN_AUDIOSESSIONID },
                 TABLE_ALARMS_COLUMN_ID + " = ?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
 
@@ -130,6 +137,7 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
             alarm.setIsActive(Integer.parseInt(cursor.getString(2)) == 1);
             alarm.setDate(new Date(Long.parseLong(cursor.getString(3))));
             alarm.setRingtoneUri(cursor.getString(4) == "" ? (Uri) null : Uri.parse(cursor.getString(4)));
+            alarm.setAudioSessionId(Integer.parseInt(cursor.getString(5)));
 
             cursor.close();
         }
@@ -147,6 +155,7 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
         values.put(TABLE_ALARMS_COLUMN_ISACTIVE, alarm.getIsActive() ? 1 : 0);
         values.put(TABLE_ALARMS_COLUMN_DATE, alarm.getDate().getTime());
         values.put(TABLE_ALARMS_COLUMN_RINGTONEURI, alarm.getRingtoneUri().toString());
+        values.put(TABLE_ALARMS_COLUMN_AUDIOSESSIONID, alarm.getAudioSessionId());
 
         int alarmId = (int)db.insert(TABLE_ALARMS, null, values);
         db.close();
@@ -163,6 +172,7 @@ public class AlarmDBHandler extends SQLiteOpenHelper {
         values.put(TABLE_ALARMS_COLUMN_ISACTIVE, alarm.getIsActive() ? 1 : 0);
         values.put(TABLE_ALARMS_COLUMN_DATE, alarm.getDate().getTime());
         values.put(TABLE_ALARMS_COLUMN_RINGTONEURI, alarm.getRingtoneUri().toString());
+        values.put(TABLE_ALARMS_COLUMN_AUDIOSESSIONID, alarm.getAudioSessionId());
 
         int effectedRows = db.update(TABLE_ALARMS, values, TABLE_ALARMS_COLUMN_ID + " = ?", new String[]{ String.valueOf(alarm.getId()) });
         db.close();

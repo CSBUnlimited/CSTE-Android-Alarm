@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".StopAlarmActivity">
 
-    <TextView
-        android:id="@+id/textView"
+    <Button
+        android:id="@+id/stopAlarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="141dp"
-        tools:layout_editor_absoluteY="197dp" />
+        style="@style/PrimaryButtonStyle"
+        android:text="Stop"/>
+
 </android.support.constraint.ConstraintLayout>
