@@ -26,7 +26,7 @@
         <receiver android:name="com.csbunlimited.ctse_csb_alarm_broadcastReceivers.AlarmBroadcastReceiver" />
         <service
             android:name="com.csbunlimited.ctse_csb_alarm_services.RingAlarmService"
-            android:enabled="true" >
+            android:enabled="true">
         </service>
     </application>
 

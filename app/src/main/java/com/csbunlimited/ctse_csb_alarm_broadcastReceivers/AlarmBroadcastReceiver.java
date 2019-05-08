@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.csbunlimited.ctse_csb_alarm_consts.AlarmApplication;
+import com.csbunlimited.ctse_csb_alarm_models.Alarm;
+import com.csbunlimited.ctse_csb_alarm_services.NotificationManagerService;
 import com.csbunlimited.ctse_csb_alarm_services.RingAlarmService;
+import com.csbunlimited.ctse_csb_db.AlarmDBHandler;
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
@@ -21,7 +24,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         int alarmId = intent.getIntExtra(AlarmApplication.ALARM_ID, 0);
 
         // create an intent to the ringtone service
-        Intent ringAlarmIntent = new Intent(context.getApplicationContext(), RingAlarmService.class);
+        Intent ringAlarmIntent = new Intent(context, RingAlarmService.class);
         ringAlarmIntent.putExtra(AlarmApplication.ALARM_ID, alarmId);
         context.startForegroundService(ringAlarmIntent);
     }
