@@ -24,6 +24,10 @@
         <activity android:name=".StopAlarmActivity"></activity>
 
         <receiver android:name="com.csbunlimited.ctse_csb_alarm_broadcastReceivers.AlarmBroadcastReceiver" />
+        <service
+            android:name="com.csbunlimited.ctse_csb_alarm_services.RingAlarmService"
+            android:enabled="true" >
+        </service>
     </application>
 
 </manifest>

@@ -1,20 +1,11 @@
 package com.csbunlimited.ctse_csb_alarm_broadcastReceivers;
 
-import android.app.AlertDialog;
-import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.widget.Toast;
 
-import com.csbunlimited.ctse_csb_alarm.NewAlarmActivity;
 import com.csbunlimited.ctse_csb_alarm_consts.AlarmApplication;
-import com.csbunlimited.ctse_csb_alarm_models.Alarm;
-import com.csbunlimited.ctse_csb_alarm_services.NotificationManagerService;
-import com.csbunlimited.ctse_csb_db.AlarmDBHandler;
+import com.csbunlimited.ctse_csb_alarm_services.RingAlarmService;
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
@@ -29,44 +20,9 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
         int alarmId = intent.getIntExtra(AlarmApplication.ALARM_ID, 0);
 
-        if (alarmId > 0) {
-            AlarmDBHandler alarmDBHandler = new AlarmDBHandler(context.getApplicationContext());
-            Alarm alarm = alarmDBHandler.getAlarmById(alarmId);
-
-            if (alarm != null) {
-                NotificationManagerService notificationManagerService = new NotificationManagerService(context);
-                notificationManagerService.sendRingAlarmNofication(alarm);
-
-                try {
-                    MediaPlayer mediaPlayer = new MediaPlayer();
-                    mediaPlayer.setDataSource(context, alarm.getRingtoneUri());
-
-                    final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                    if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-                        mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-
-                        int loopCount = 0, maxLoopCount = 5;
-                        do {
-                            int audioSessionId = audioManager.generateAudioSessionId();
-                            mediaPlayer.setAudioSessionId(audioSessionId);
-                            loopCount++;
-                        } while (mediaPlayer.getAudioSessionId() == AudioManager.ERROR && loopCount <= maxLoopCount);
-
-                        if (mediaPlayer.getAudioSessionId() != AudioManager.ERROR) {
-                            mediaPlayer.setLooping(true);
-//                            mediaPlayer.prepare();
-                            mediaPlayer.start();
-                        }
-                    }
-
-                    alarm.setAudioSessionId(mediaPlayer.getAudioSessionId());
-                    alarmDBHandler.updateAlarm(alarm);
-                }
-                catch (Exception ex) {
-                    System.out.print(ex.toString());
-                }
-            }
-
-        }
+        // create an intent to the ringtone service
+        Intent ringAlarmIntent = new Intent(context.getApplicationContext(), RingAlarmService.class);
+        ringAlarmIntent.putExtra(AlarmApplication.ALARM_ID, alarmId);
+        context.startForegroundService(ringAlarmIntent);
     }
 }
