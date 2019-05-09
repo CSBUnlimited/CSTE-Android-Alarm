@@ -66,7 +66,7 @@ public class ManageAlarmService {
         cancelAlarm(alarmId);
 
         try {
-            AudioManager audioManager = (AudioManager) _mainActivityContext.getSystemService(Context.AUDIO_SERVICE);
+//            AudioManager audioManager = (AudioManager) _mainActivityContext.getSystemService(Context.AUDIO_SERVICE);
 
             MediaPlayer mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioSessionId(audioSessionId);

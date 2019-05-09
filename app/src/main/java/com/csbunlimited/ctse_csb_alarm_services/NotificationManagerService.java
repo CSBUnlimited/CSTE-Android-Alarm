@@ -24,10 +24,7 @@ public class NotificationManagerService {
         _notificationManagerCompat = NotificationManagerCompat.from(_context);
     }
 
-    public void sendRingAlarmNofication(Alarm alarm) {
-
-        Intent ringAlarmIntent = new Intent(_context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(_context, 0, ringAlarmIntent, 0);
+    public Notification getRingAlarmNofication(Alarm alarm, PendingIntent pendingIntent) {
 
         String alarmTimeInString = ((alarm.getDate().getHours() < 10) ? "0" : "") + alarm.getDate().getHours()
                 + " : " + ((alarm.getDate().getMinutes() < 10) ? "0" : "") + alarm.getDate().getMinutes();
@@ -43,7 +40,8 @@ public class NotificationManagerService {
                 .setContentIntent(pendingIntent)
                 .build();
 
-        _notificationManagerCompat.notify(alarm.getId(), notification);
+        return notification;
+//        _notificationManagerCompat.notify(alarm.getId(), notification);
     }
 
     public void sendOtherNofication(String title, String message) {
@@ -54,7 +52,9 @@ public class NotificationManagerService {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .build();
 
-        _notificationManagerCompat.notify(2, notification);
+
+
+//        _notificationManagerCompat.notify(2, notification);
     }
 
     public void sendShortLengthToastMessage(String message) {

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.csbunlimited.ctse_csb_alarm">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:name="com.csbunlimited.ctse_csb_alarm_consts.AlarmApplication"
         android:allowBackup="true"
@@ -28,6 +30,7 @@
             android:name="com.csbunlimited.ctse_csb_alarm_services.RingAlarmService"
             android:enabled="true">
         </service>
+
     </application>
 
 </manifest>

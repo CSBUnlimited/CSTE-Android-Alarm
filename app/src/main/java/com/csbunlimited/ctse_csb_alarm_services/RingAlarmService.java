@@ -1,5 +1,7 @@
 package com.csbunlimited.ctse_csb_alarm_services;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +10,8 @@ import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.csbunlimited.ctse_csb_alarm.MainActivity;
+import com.csbunlimited.ctse_csb_alarm.StopAlarmActivity;
 import com.csbunlimited.ctse_csb_alarm_consts.AlarmApplication;
 import com.csbunlimited.ctse_csb_alarm_models.Alarm;
 import com.csbunlimited.ctse_csb_db.AlarmDBHandler;
@@ -41,8 +45,14 @@ public class RingAlarmService extends Service {
             Alarm alarm = _alarmDBHandler.getAlarmById(alarmId);
 
             if (alarm != null) {
+
+                Intent ringAlarmIntent = new Intent(this, StopAlarmActivity.class);
+                ringAlarmIntent.putExtra(AlarmApplication.ALARM_ID, alarmId);
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, ringAlarmIntent, 0);
+
                 NotificationManagerService notificationManagerService = new NotificationManagerService(this);
-                notificationManagerService.sendRingAlarmNofication(alarm);
+                Notification notification = notificationManagerService.getRingAlarmNofication(alarm, pendingIntent);
 //
 //                Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), alarm.getRingtoneUri());
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -59,7 +69,6 @@ public class RingAlarmService extends Service {
 //                            mediaPlayer.prepare();
                         _mediaPlayer.start();
                     }
-
 //                    final AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 
 //                    if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
@@ -85,6 +94,8 @@ public class RingAlarmService extends Service {
                 catch (Exception ex) {
                     System.out.print(ex.toString());
                 }
+
+                startForeground(alarm.getId(), notification);
             }
 
 //            Intent i = new Intent();
