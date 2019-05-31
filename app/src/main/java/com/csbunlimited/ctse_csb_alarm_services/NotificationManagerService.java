@@ -68,5 +68,6 @@ public class NotificationManagerService {
     public void removeNotification(int alarmId) {
         NotificationManager notificationManager = (NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(alarmId);
+        notificationManager.cancelAll();
     }
 }

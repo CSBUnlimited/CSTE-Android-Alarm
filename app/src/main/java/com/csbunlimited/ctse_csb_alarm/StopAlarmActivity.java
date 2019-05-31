@@ -45,11 +45,10 @@ public class StopAlarmActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                _notificationManagerService.removeNotification(_alarm.getId());
-                _manageAlarmService.stopAlarm(_alarm.getId(), _alarm.getAudioSessionId());
+                _notificationManagerService.removeNotification(_alarm.getId());
 
                 _alarm.setIsActive(false);
-                _alarm.setAudioSessionId(Alarm.NONE_AUDIO_SESSION_ID);
+//                _alarm.setAudioSessionId(Alarm.NONE_AUDIO_SESSION_ID);
 
                 _alarmDBHandler.updateAlarm(_alarm);
             }
